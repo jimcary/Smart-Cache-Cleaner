@@ -1,0 +1,6 @@
+{
+  "name": "智能缓存清理 (Smart Cache Cleaner)",
+  "description": "Chrome扩展与域名访问频次智能缓存清理系统，按会话间隔统计频次，一键清理低频域名的缓存、Cookie与本地数据。",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
