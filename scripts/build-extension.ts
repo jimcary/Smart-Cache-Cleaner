@@ -41,14 +41,25 @@ function buildExtension() {
 
   const sizes = [16, 32, 48, 128];
   sizes.forEach((size) => {
-    const pngPath = path.resolve(process.cwd(), `assets/icons/icon${size}.png`);
-    if (fs.existsSync(pngPath)) {
-      fs.copyFileSync(pngPath, path.join(outDir, `assets/icons/icon${size}.png`));
+    const srcPng = path.resolve(process.cwd(), `src/assets/icons/icon${size}.png`);
+    const rootPng = path.resolve(process.cwd(), `assets/icons/icon${size}.png`);
+    const targetPath = path.join(outDir, `assets/icons/icon${size}.png`);
+    
+    if (fs.existsSync(srcPng)) {
+      fs.copyFileSync(srcPng, targetPath);
+      // Sync to root assets/icons as well
+      fs.copyFileSync(srcPng, rootPng);
+    } else if (fs.existsSync(rootPng)) {
+      fs.copyFileSync(rootPng, targetPath);
     }
   });
 
+  const srcRootPng = path.resolve(process.cwd(), 'src/assets/icons/icon.png');
   const rootIconPng = path.resolve(process.cwd(), 'assets/icon.png');
-  if (fs.existsSync(rootIconPng)) {
+  if (fs.existsSync(srcRootPng)) {
+    fs.copyFileSync(srcRootPng, path.join(outDir, 'assets/icon.png'));
+    fs.copyFileSync(srcRootPng, rootIconPng);
+  } else if (fs.existsSync(rootIconPng)) {
     fs.copyFileSync(rootIconPng, path.join(outDir, 'assets/icon.png'));
   }
 
