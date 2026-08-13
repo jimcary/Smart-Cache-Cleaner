@@ -57,7 +57,7 @@ export const WhitelistManager: React.FC<WhitelistManagerProps> = ({
             <span>域名受保护白名单管理 (Whitelist Protection)</span>
           </h2>
           <p className="text-xs text-slate-500">
-            加入白名单的域名将受到永久高优先级保护。无论其访问频次多低或多久未打开，清理引擎都将自动跳过。
+            加入白名单的域名将受到永久高优先级保护。<strong>若添加根域名（如 google.com），其所有子域名（如 api.google.com）也会自动继承保护</strong>。无论其访问频次多低，清理引擎都将自动跳过。
           </p>
         </div>
 

@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from 'react';
-import pluginIcon from '../assets/images/app_icon_1786511663317.jpg';
+import pluginIcon from '../assets/icons/icon128.png';
 import { DomainStat, SessionConfig, CleanerSettings } from '../types/extension';
+import { isDomainWhitelisted } from '../utils/storageHelper';
 import {
   Settings,
   Sparkles,
@@ -34,10 +35,14 @@ export const PopupSimulator: React.FC<PopupSimulatorProps> = ({
 }) => {
   const [selectedDomains, setSelectedDomains] = useState<string[]>([]);
 
-  // Filter low frequency target domains based on config.thresholdCount
+  const whitelist = useMemo(() => {
+    return stats.filter((s) => s.isWhitelisted).map((s) => s.domain);
+  }, [stats]);
+
+  // Filter low frequency target domains based on config.thresholdCount and wildcard whitelist
   const targetDomains = useMemo(() => {
-    return stats.filter((s) => s.count < config.thresholdCount && !s.isWhitelisted);
-  }, [stats, config.thresholdCount]);
+    return stats.filter((s) => s.count < config.thresholdCount && !isDomainWhitelisted(s.domain, whitelist));
+  }, [stats, config.thresholdCount, whitelist]);
 
   // Sync selected domains when targetDomains change
   React.useEffect(() => {

@@ -1,5 +1,5 @@
 import React from 'react';
-import pluginIcon from '../assets/images/app_icon_1786511663317.jpg';
+import pluginIcon from '../assets/icons/icon128.png';
 import {
   ShieldCheck,
   Zap,

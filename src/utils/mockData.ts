@@ -12,6 +12,17 @@ export const INITIAL_DOMAINS: DomainStat[] = [
     category: 'search'
   },
   {
+    domain: 'api.google.com',
+    count: 1,
+    lastActiveTime: Date.now() - 1000 * 60 * 60 * 5, // 5 hours ago
+    firstVisited: Date.now() - 1000 * 60 * 60 * 24 * 10,
+    estimatedStorageMB: 18.2,
+    dataTypes: { cache: true, cookies: true, localStorage: true, indexedDB: false, serviceWorkers: false },
+    isWhitelisted: false,
+    category: 'search',
+    notes: 'Google API 服务 (自动继承 google.com 根域名白名单保护)'
+  },
+  {
     domain: 'github.com',
     count: 98,
     lastActiveTime: Date.now() - 1000 * 60 * 45, // 45 mins ago
@@ -20,6 +31,17 @@ export const INITIAL_DOMAINS: DomainStat[] = [
     dataTypes: { cache: true, cookies: true, localStorage: true, indexedDB: true, serviceWorkers: true },
     isWhitelisted: true,
     category: 'dev'
+  },
+  {
+    domain: 'assets.github.com',
+    count: 1,
+    lastActiveTime: Date.now() - 1000 * 60 * 60 * 12,
+    firstVisited: Date.now() - 1000 * 60 * 60 * 24 * 15,
+    estimatedStorageMB: 25.4,
+    dataTypes: { cache: true, cookies: true, localStorage: true, indexedDB: false, serviceWorkers: false },
+    isWhitelisted: false,
+    category: 'dev',
+    notes: 'GitHub 静态资源 (自动继承 github.com 根域名白名单保护)'
   },
   {
     domain: 'stackoverflow.com',

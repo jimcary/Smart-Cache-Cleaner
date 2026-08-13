@@ -22,6 +22,7 @@ import {
   executeCleanDomains,
   getSimulatedVisitLogs,
   resetAllDataToDefault,
+  isDomainWhitelisted,
 } from './utils/storageHelper';
 import { downloadExtensionZip } from './utils/extensionCodeGenerator';
 
@@ -220,7 +221,7 @@ export default function App() {
     }
   };
 
-  const lowFrequencyTargets = stats.filter((s) => s.count < config.thresholdCount && !s.isWhitelisted);
+  const lowFrequencyTargets = stats.filter((s) => s.count < config.thresholdCount && !isDomainWhitelisted(s.domain, whitelist));
   const totalStorageMB = stats.reduce((acc, curr) => acc + curr.estimatedStorageMB, 0);
 
   return (

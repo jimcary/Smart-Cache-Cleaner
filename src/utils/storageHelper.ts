@@ -202,6 +202,20 @@ export function recordDomainVisitInSimulator(rawDomain: string): {
 }
 
 /**
+ * 校验域名是否在白名单中（支持根域名自动保护所有子域名）
+ * 例如：若 whitelist 包含 "google.com"，则 "google.com"、"api.google.com"、"mail.google.com" 均会被认定为在白名单中
+ */
+export function isDomainWhitelisted(domain: string, whitelist: string[]): boolean {
+  if (!domain || !whitelist || whitelist.length === 0) return false;
+  const d = domain.split(':')[0].trim().toLowerCase();
+  return whitelist.some((w) => {
+    const target = w.split(':')[0].trim().toLowerCase();
+    if (!target) return false;
+    return d === target || d.endsWith('.' + target);
+  });
+}
+
+/**
  * 执行清理逻辑
  */
 export function executeCleanDomains(
@@ -209,10 +223,12 @@ export function executeCleanDomains(
   settings: CleanerSettings
 ): { freedMB: number; cleanedCount: number } {
   const stats = getDomainStats();
+  const whitelist = stats.filter((s) => s.isWhitelisted).map((s) => s.domain);
   let freedMB = 0;
 
   const remaining = stats.filter((s) => {
-    if (domainsToClean.includes(s.domain)) {
+    // 若域名属于白名单或为其子域名，防误删机制生效，保留该记录
+    if (domainsToClean.includes(s.domain) && !isDomainWhitelisted(s.domain, whitelist)) {
       freedMB += s.estimatedStorageMB;
       return false;
     }
@@ -246,3 +262,4 @@ export function resetAllDataToDefault(): void {
   localStorage.removeItem(SIM_LOGS_KEY);
   setVirtualTimeOffset(0);
 }
+

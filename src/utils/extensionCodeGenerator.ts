@@ -1,12 +1,5 @@
 import JSZip from 'jszip';
 import { SessionConfig, CleanerSettings } from '../types/extension';
-import {
-  ICON_PNG_BASE64_16,
-  ICON_PNG_BASE64_32,
-  ICON_PNG_BASE64_48,
-  ICON_PNG_BASE64_128,
-  ICON_JPG_BASE64,
-} from '../assets/iconBase64';
 
 export interface ExtensionFiles {
   'manifest.json': string;
@@ -599,6 +592,16 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  function isDomainWhitelisted(domain, list) {
+    if (!domain || !list || list.length === 0) return false;
+    const d = domain.split(':')[0].trim().toLowerCase();
+    return list.some((w) => {
+      const target = w.split(':')[0].trim().toLowerCase();
+      if (!target) return false;
+      return d === target || d.endsWith('.' + target);
+    });
+  }
+
   // 2. 根据阈值过滤与渲染
   function renderUI() {
     const threshold = parseInt(thresholdSlider.value, 10);
@@ -607,9 +610,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const domainEntries = Object.entries(allStats);
     totalDomainsEl.textContent = domainEntries.length;
 
-    // 过滤低于阈值且不在白名单中的域名
+    // 过滤低于阈值且不在白名单（或根域名白名单）中的域名
     currentTargets = domainEntries
-      .filter(([domain, stat]) => stat.count < threshold && !whitelist.includes(domain))
+      .filter(([domain, stat]) => stat.count < threshold && !isDomainWhitelisted(domain, whitelist))
       .map(([domain, stat]) => ({ domain, ...stat }));
 
     targetCountEl.textContent = currentTargets.length;
@@ -1359,6 +1362,16 @@ document.addEventListener('DOMContentLoaded', () => {
   const whitelistContainer = document.getElementById('whitelist-container');
   const saveSettingsBtn = document.getElementById('save-settings-btn');
 
+  function isDomainWhitelisted(domain, list) {
+    if (!domain || !list || list.length === 0) return false;
+    const d = domain.split(':')[0].trim().toLowerCase();
+    return list.some((w) => {
+      const target = w.split(':')[0].trim().toLowerCase();
+      if (!target) return false;
+      return d === target || d.endsWith('.' + target);
+    });
+  }
+
   function loadData() {
     chrome.storage.local.get(['domain_stats', 'whitelist', 'session_config'], (res) => {
       statsData = res.domain_stats || getInitialMockStats();
@@ -1381,13 +1394,13 @@ document.addEventListener('DOMContentLoaded', () => {
   function getInitialMockStats() {
     const now = Date.now();
     return {
-      'google.com': { domain: 'google.com', count: 42, lastActiveTime: now - 300000, estimatedStorageMB: 12.4, isWhitelisted: true, notes: '搜索引擎/高频工具' },
-      'github.com': { domain: 'github.com', count: 18, lastActiveTime: now - 1800000, estimatedStorageMB: 24.8, isWhitelisted: true, notes: '代码托管平台' },
-      'stackoverflow.com': { domain: 'stackoverflow.com', count: 9, lastActiveTime: now - 86400000, estimatedStorageMB: 8.2, isWhitelisted: true, notes: '开发者问答网站' },
-      'temp-news-feed.com': { domain: 'temp-news-feed.com', count: 1, lastActiveTime: now - 172800000, estimatedStorageMB: 15.6, isWhitelisted: false, notes: '单次资讯页面' },
-      'random-shop-deal.net': { domain: 'random-shop-deal.net', count: 2, lastActiveTime: now - 259200000, estimatedStorageMB: 32.1, isWhitelisted: false, notes: '优惠推广页' },
-      'one-time-forum.org': { domain: 'one-time-forum.org', count: 1, lastActiveTime: now - 432000000, estimatedStorageMB: 11.5, isWhitelisted: false, notes: '临时论坛贴' },
-      'rare-tool-site.io': { domain: 'rare-tool-site.io', count: 1, lastActiveTime: now - 500000000, estimatedStorageMB: 18.2, isWhitelisted: false, notes: '一次性转换工具' },
+      'google.com': { domain: 'google.com', count: 42, lastActiveTime: now - 300000, estimatedStorageMB: 12.4, notes: '搜索引擎/高频工具' },
+      'github.com': { domain: 'github.com', count: 18, lastActiveTime: now - 1800000, estimatedStorageMB: 24.8, notes: '代码托管平台' },
+      'stackoverflow.com': { domain: 'stackoverflow.com', count: 9, lastActiveTime: now - 86400000, estimatedStorageMB: 8.2, notes: '开发者问答网站' },
+      'temp-news-feed.com': { domain: 'temp-news-feed.com', count: 1, lastActiveTime: now - 172800000, estimatedStorageMB: 15.6, notes: '单次资讯页面' },
+      'random-shop-deal.net': { domain: 'random-shop-deal.net', count: 2, lastActiveTime: now - 259200000, estimatedStorageMB: 32.1, notes: '优惠推广页' },
+      'one-time-forum.org': { domain: 'one-time-forum.org', count: 1, lastActiveTime: now - 432000000, estimatedStorageMB: 11.5, notes: '临时论坛贴' },
+      'rare-tool-site.io': { domain: 'rare-tool-site.io', count: 1, lastActiveTime: now - 500000000, estimatedStorageMB: 18.2, notes: '一次性转换工具' },
     };
   }
 
@@ -1409,7 +1422,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     return entries.map(val => {
       const d = val.domain || 'unknown';
-      const isW = whitelist.includes(d);
+      const isW = isDomainWhitelisted(d, whitelist);
       return {
         domain: d,
         count: val.count ?? val.visitCount ?? 1,
@@ -1443,7 +1456,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const totalCount = allDomains.length;
 
     // Filter target low frequency
-    const targetDomains = allDomains.filter(d => d.count < currentThreshold && !whitelist.includes(d.domain));
+    const targetDomains = allDomains.filter(d => d.count < currentThreshold && !isDomainWhitelisted(d.domain, whitelist));
     const freeableMb = targetDomains.reduce((acc, curr) => acc + (curr.estimatedStorageMB || 0), 0);
     const totalStorageMb = allDomains.reduce((acc, curr) => acc + (curr.estimatedStorageMB || 0), 0);
     const pct = totalStorageMb > 0 ? ((freeableMb / totalStorageMb) * 100).toFixed(0) : '0';
@@ -1500,7 +1513,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     tableBody.innerHTML = filteredDomains.map(d => {
-      const isWhite = whitelist.includes(d.domain);
+      const isWhite = isDomainWhitelisted(d.domain, whitelist);
       const isLow = d.count < currentThreshold;
       const isCleanCandidate = isLow && !isWhite;
       const isChecked = selectedDomainsSet.has(d.domain);
@@ -1526,7 +1539,7 @@ document.addEventListener('DOMContentLoaded', () => {
           </td>
           <td>
             <div class="visit-pill">
-              <span style="color: \${isCleanCandidate ? '#dc2626' : '#2563eb'};\ font-weight:800;">\${d.count}</span>
+              <span style="color: \${isCleanCandidate ? '#dc2626' : '#2563eb'}; font-weight:800;">\${d.count}</span>
               <span style="font-size:10px; font-weight:normal; color:#64748b;">次会话</span>
             </div>
           </td>
@@ -1566,8 +1579,8 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('.toggle-white-btn').forEach(btn => {
       btn.addEventListener('click', (e) => {
         const domain = e.target.getAttribute('data-domain');
-        if (whitelist.includes(domain)) {
-          whitelist = whitelist.filter(w => w !== domain);
+        if (isDomainWhitelisted(domain, whitelist)) {
+          whitelist = whitelist.filter(w => !isDomainWhitelisted(domain, [w]));
         } else {
           whitelist.push(domain);
         }
@@ -1642,7 +1655,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (isChecked) selectedDomainsSet.add(dom);
       else selectedDomainsSet.delete(dom);
     });
-    const targetDomains = normalizeDomains(statsData).filter(d => d.count < currentThreshold && !whitelist.includes(d.domain));
+    const targetDomains = normalizeDomains(statsData).filter(d => d.count < currentThreshold && !isDomainWhitelisted(d.domain, whitelist));
     cleanTargetBadge.textContent = selectedDomainsSet.size > 0 ? selectedDomainsSet.size.toString() : targetDomains.length.toString();
   });
 
@@ -1650,7 +1663,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let targets = Array.from(selectedDomainsSet);
     if (targets.length === 0) {
       targets = normalizeDomains(statsData)
-        .filter(d => d.count < currentThreshold && !whitelist.includes(d.domain))
+        .filter(d => d.count < currentThreshold && !isDomainWhitelisted(d.domain, whitelist))
         .map(d => d.domain);
     }
 
@@ -1932,30 +1945,6 @@ export async function downloadExtensionZip(
     zip.file(filename, content);
   });
 
-  // Convert base64 icons to binary byte arrays for ZIP
-  const base64ToBytes = (base64Str: string): Uint8Array => {
-    const binaryStr = atob(base64Str);
-    const bytes = new Uint8Array(binaryStr.length);
-    for (let i = 0; i < binaryStr.length; i++) {
-      bytes[i] = binaryStr.charCodeAt(i);
-    }
-    return bytes;
-  };
-
-  const icon16Bytes = base64ToBytes(ICON_PNG_BASE64_16);
-  const icon32Bytes = base64ToBytes(ICON_PNG_BASE64_32);
-  const icon48Bytes = base64ToBytes(ICON_PNG_BASE64_48);
-  const icon128Bytes = base64ToBytes(ICON_PNG_BASE64_128);
-  const iconJpgBytes = base64ToBytes(ICON_JPG_BASE64);
-
-  // Add PNG & JPG icon files to ZIP
-  zip.file('assets/icons/icon16.png', icon16Bytes);
-  zip.file('assets/icons/icon32.png', icon32Bytes);
-  zip.file('assets/icons/icon48.png', icon48Bytes);
-  zip.file('assets/icons/icon128.png', icon128Bytes);
-  zip.file('assets/icon.png', icon128Bytes);
-  zip.file('assets/icon.jpg', iconJpgBytes);
-
   // Helper to draw icon to canvas
   const createIconBuffer = (size: number): Uint8Array => {
     const canvas = document.createElement('canvas');
@@ -2047,10 +2036,11 @@ export async function downloadExtensionZip(
     return bytes;
   };
 
-  // Add PNG icon binary files
+  // Add PNG icon binary files dynamically generated via Canvas
   [16, 32, 48, 128].forEach((size) => {
     zip.file(`assets/icons/icon${size}.png`, createIconBuffer(size));
   });
+  zip.file('assets/icon.png', createIconBuffer(128));
 
   // Helper to draw demo screenshot to canvas
   const createDemoBuffer = (title: string, sub: string, accentColor: string): Uint8Array => {

@@ -1,5 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { DomainStat, SessionConfig } from '../types/extension';
+import { isDomainWhitelisted } from '../utils/storageHelper';
 import {
   Search,
   Filter,
@@ -43,9 +44,13 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
   // Computed metrics
   const totalDomains = stats.length;
 
+  const whitelist = useMemo(() => {
+    return stats.filter((s) => s.isWhitelisted).map((s) => s.domain);
+  }, [stats]);
+
   const lowFrequencyTargets = useMemo(() => {
-    return stats.filter((s) => s.count < config.thresholdCount && !s.isWhitelisted);
-  }, [stats, config.thresholdCount]);
+    return stats.filter((s) => s.count < config.thresholdCount && !isDomainWhitelisted(s.domain, whitelist));
+  }, [stats, config.thresholdCount, whitelist]);
 
   const totalReclaimableMB = useMemo(() => {
     return lowFrequencyTargets.reduce((acc, curr) => acc + curr.estimatedStorageMB, 0);
@@ -74,12 +79,13 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
       .filter((item) => {
         const matchesSearch = item.domain.toLowerCase().includes(searchTerm.toLowerCase());
         const matchesCategory = categoryFilter === 'all' || item.category === categoryFilter;
+        const isWhitelisted = isDomainWhitelisted(item.domain, whitelist);
         const matchesWhitelist =
           whitelistFilter === 'all'
             ? true
             : whitelistFilter === 'whitelisted'
-            ? item.isWhitelisted
-            : !item.isWhitelisted;
+            ? isWhitelisted
+            : !isWhitelisted;
         return matchesSearch && matchesCategory && matchesWhitelist;
       })
       .sort((a, b) => {
@@ -89,7 +95,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
         if (sortBy === 'storage-desc') return b.estimatedStorageMB - a.estimatedStorageMB;
         return 0;
       });
-  }, [stats, searchTerm, categoryFilter, whitelistFilter, sortBy]);
+  }, [stats, searchTerm, categoryFilter, whitelistFilter, sortBy, whitelist]);
 
   function formatTimeAgo(timeMs: number) {
     const diffMs = virtualTime - timeMs;
