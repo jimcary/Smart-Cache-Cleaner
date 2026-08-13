@@ -26,10 +26,9 @@ function buildExtension() {
     fs.writeFileSync(filePath, content, 'utf-8');
     console.log(`  ✓ 生成文件: ${filename}`);
 
-    // Also copy README.md to root README.md and read.md
+    // Also copy README.md to root README.md
     if (filename === 'README.md') {
       fs.writeFileSync(path.resolve(process.cwd(), 'README.md'), content, 'utf-8');
-      fs.writeFileSync(path.resolve(process.cwd(), 'read.md'), content, 'utf-8');
     }
   });
 
