@@ -40,7 +40,7 @@ export const WhitelistManager: React.FC<WhitelistManagerProps> = ({
   const handleAddSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (newDomain.trim()) {
-      onAddWhitelist(newDomain.trim().toLowerCase());
+      onAddWhitelist(newDomain.trim());
       setNewDomain('');
     }
   };
@@ -77,21 +77,24 @@ export const WhitelistManager: React.FC<WhitelistManagerProps> = ({
               <span>手动添加保护域名</span>
             </h3>
 
-            <form onSubmit={handleAddSubmit} className="space-y-2">
-              <input
-                type="text"
-                placeholder="例如: github.com 或 myapp.internal"
+            <form onSubmit={handleAddSubmit} className="space-y-3">
+              <textarea
+                rows={3}
+                placeholder="例如: github.com, google.com， stackoverflow.com&#10;支持以英文逗号 (,)、中文逗号 (，)、分号、空格或换行批量输入"
                 value={newDomain}
                 onChange={(e) => setNewDomain(e.target.value)}
-                className="w-full px-3.5 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs font-medium focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs font-medium focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
               />
-              <button
-                type="submit"
-                disabled={!newDomain.trim()}
-                className="w-full py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-slate-200 text-white font-bold text-xs rounded-xl transition-all shadow-md shadow-blue-600/20"
-              >
-                加入白名单保护
-              </button>
+              <div className="flex items-center justify-between text-[11px] text-slate-400">
+                <span>支持逗号/分号/换行批量输入</span>
+                <button
+                  type="submit"
+                  disabled={!newDomain.trim()}
+                  className="px-4 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-slate-200 text-white font-bold text-xs rounded-xl transition-all shadow-md shadow-blue-600/20"
+                >
+                  批量加入白名单
+                </button>
+              </div>
             </form>
           </div>
 

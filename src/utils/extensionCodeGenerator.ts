@@ -1270,10 +1270,10 @@ document.addEventListener('DOMContentLoaded', () => {
     <div class="card">
       <h2>2. 受保护白名单域名 (永久免清理)</h2>
       <div class="form-group">
-        <label>添加保护域名：</label>
-        <div style="display:flex; gap: 10px;">
-          <input type="text" id="new-white-domain" class="input-full" placeholder="例如: github.com, google.com">
-          <button id="add-white-btn" class="btn-primary" style="white-space: nowrap;">添加保护</button>
+        <label>添加保护域名 (支持以英文/中文逗号、分号、空格或换行批量添加)：</label>
+        <div style="display:flex; flex-direction: column; gap: 8px;">
+          <textarea id="new-white-domain" class="input-full" style="height: 60px; padding: 8px; font-family: inherit; resize: vertical;" placeholder="例如: github.com, google.com， stackoverflow.com"></textarea>
+          <button id="add-white-btn" class="btn-primary" style="align-self: flex-end; white-space: nowrap;">批量添加保护</button>
         </div>
       </div>
       <div class="whitelist-tags" id="whitelist-container">
@@ -1687,9 +1687,23 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   addWhiteBtn.addEventListener('click', () => {
-    const val = newWhiteInput.value.trim().toLowerCase();
-    if (val && !whitelist.includes(val)) {
-      whitelist.push(val);
+    const rawVal = newWhiteInput.value.trim();
+    if (!rawVal) return;
+
+    const items = rawVal
+      .split(/[,，;\\s]+/)
+      .map(s => s.trim().toLowerCase().replace(/^https?:\\/\\//i, '').replace(/\\/.*$/, ''))
+      .filter(s => s.length > 0);
+
+    let addedCount = 0;
+    items.forEach(item => {
+      if (!whitelist.includes(item)) {
+        whitelist.push(item);
+        addedCount++;
+      }
+    });
+
+    if (addedCount > 0) {
       newWhiteInput.value = '';
       chrome.storage.local.set({ whitelist: whitelist }, () => renderAll());
     }

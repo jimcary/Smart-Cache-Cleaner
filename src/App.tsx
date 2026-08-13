@@ -95,33 +95,53 @@ export default function App() {
     showToast(`域名 ${domain} 白名单状态已更新`);
   };
 
-  // Handle adding new whitelist domain
-  const handleAddWhitelist = (domain: string) => {
-    let exists = false;
-    const updated = stats.map((s) => {
-      if (s.domain === domain) {
-        exists = true;
-        return { ...s, isWhitelisted: true };
-      }
-      return s;
-    });
+  // Handle adding new whitelist domain (supports batch comma/space/newline separated input)
+  const handleAddWhitelist = (domainInput: string) => {
+    const rawTokens = domainInput.split(/[,，;\r\n\s]+/);
+    const domainsToAdd = Array.from(
+      new Set(
+        rawTokens
+          .map((d) => d.trim().toLowerCase().replace(/^https?:\/\//i, '').replace(/\/.*$/, ''))
+          .filter((d) => d.length > 0)
+      )
+    );
 
-    if (!exists) {
-      updated.push({
-        domain,
-        count: 0,
-        lastActiveTime: currentTimeMs,
-        firstVisited: currentTimeMs,
-        estimatedStorageMB: 5.0,
-        dataTypes: { cache: true, cookies: true, localStorage: true, indexedDB: false, serviceWorkers: false },
-        isWhitelisted: true,
-        category: 'other',
+    if (domainsToAdd.length === 0) return;
+
+    let updated = [...stats];
+
+    domainsToAdd.forEach((domain) => {
+      let exists = false;
+      updated = updated.map((s) => {
+        if (s.domain === domain) {
+          exists = true;
+          return { ...s, isWhitelisted: true };
+        }
+        return s;
       });
-    }
+
+      if (!exists) {
+        updated.push({
+          domain,
+          count: 0,
+          lastActiveTime: currentTimeMs,
+          firstVisited: currentTimeMs,
+          estimatedStorageMB: 5.0,
+          dataTypes: { cache: true, cookies: true, localStorage: true, indexedDB: false, serviceWorkers: false },
+          isWhitelisted: true,
+          category: 'other',
+        });
+      }
+    });
 
     setStats(updated);
     saveDomainStats(updated);
-    showToast(`已成功将 ${domain} 加入受保护白名单`);
+
+    if (domainsToAdd.length === 1) {
+      showToast(`已成功将 ${domainsToAdd[0]} 加入受保护白名单`);
+    } else {
+      showToast(`已成功将 ${domainsToAdd.length} 个域名批量加入受保护白名单`);
+    }
   };
 
   // Handle single domain clean
