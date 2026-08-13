@@ -8,22 +8,6 @@
 
 ---
 
-## 🎨 插件图标 (Plugin Icon)
-
-扩展程序全局统一使用 `assets/icons/icon128.png` / `assets/icon.png` 作为标识图标：
-
-```text
-   ┌──────────────────────────────────────────────┐
-   │                                              │
-   │         [ assets/icons/icon128.png ]         │
-   │                                              │
-   │      极简极速 · 智能缓存清理标识图标         │
-   │                                              │
-   └──────────────────────────────────────────────┘
-```
-
----
-
 ## 🏗️ 系统设计架构 (System Architecture)
 
 本项目采用 **“Web 模拟仿真 + Manifest V3 原生插件生成器”** 架构设计：
@@ -60,13 +44,13 @@
 
 ### 2. 核心组件与 API 映射
 
-| 组件 / 模块 | 文件路径 | 核心 API / 职责 |
-| :--- | :--- | :--- |
-| **Manifest V3 描述符** | `manifest.json` | 声明权限 `tabs`, `browsingData`, `storage`, `history` 与 `assets/icons/icon*.png` 图标 |
-| **Service Worker** | `background.js` | 监听 `chrome.tabs.onUpdated`、时间戳计算与 `chrome.browsingData.remove` 清理 |
-| **悬浮控制弹窗** | `popup.html` / `.js` | 当前页面域名识别、阈值滑块调整与快速清理 |
-| **明细管理控制台** | `options.html` / `.js` | 全维频次报表、分类检索过滤与白名单规则配置 |
-| **模板构建脚本** | `scripts/build-extension.ts` | Node.js 物理编译，输出 `./dist-extension` 目录 |
+| 组件 / 模块            | 文件路径                     | 核心 API / 职责                                                                        |
+| :--------------------- | :--------------------------- | :------------------------------------------------------------------------------------- |
+| **Manifest V3 描述符** | `manifest.json`              | 声明权限 `tabs`, `browsingData`, `storage`, `history` 与 `assets/icons/icon*.png` 图标 |
+| **Service Worker**     | `background.js`              | 监听 `chrome.tabs.onUpdated`、时间戳计算与 `chrome.browsingData.remove` 清理           |
+| **悬浮控制弹窗**       | `popup.html` / `.js`         | 当前页面域名识别、阈值滑块调整与快速清理                                               |
+| **明细管理控制台**     | `options.html` / `.js`       | 全维频次报表、分类检索过滤与白名单规则配置                                             |
+| **模板构建脚本**       | `scripts/build-extension.ts` | Node.js 物理编译，输出 `./dist-extension` 目录                                         |
 
 ---
 
@@ -92,6 +76,7 @@
 ## 📸 交互功能演示 (Visual Walkthrough)
 
 ### 1. 极简悬浮弹窗模式 (Popup Window)
+
 能够在任意网页上一键唤起悬浮小窗，直观查看当前记录域名数、待清理低频域名数以及可释放空间，并提供滑动阈值调节与一键定向清理。
 
 ![Demo 1: 极简悬浮弹窗模式](https://raw.githubusercontent.com/jimcary/Smart-Cache-Cleaner/main/assets/demo/demo1-popup.jpg)
@@ -99,6 +84,7 @@
 ---
 
 ### 2. 域名频次监控与分析控制台 (Analytics Dashboard)
+
 提供多维度筛选（按访问频次分类、保护白名单状态、域名检索等）与自定义排序功能，深度调阅网站历史访问与预估占用的存储空间。
 
 ![Demo 2: 域名频次监控与分析控制台](https://raw.githubusercontent.com/jimcary/Smart-Cache-Cleaner/main/assets/demo/demo2-dashboard.jpg)
@@ -106,6 +92,7 @@
 ---
 
 ### 3. 会话规则与受保护白名单配置 (Settings & Whitelist)
+
 灵活调整会话判定超时时间（默认 GA 算法建议 30 分钟），支持通过英文逗号、中文逗号、分号或换行**批量导入**受保护白名单域名，避免重要网站被意外误清理。
 
 ![Demo 3: 会话规则与受保护白名单配置](https://raw.githubusercontent.com/jimcary/Smart-Cache-Cleaner/main/assets/demo/demo3-settings.jpg)
@@ -113,6 +100,7 @@
 ---
 
 ### 4. 一键定向安全清理 (Targeted Data Cleanup)
+
 勾选目标域名或批量选择低频站点，安全清理页面 Cache、Cookies 凭证与 LocalStorage 本地存储，实时展示释放空间反馈与进度更新。
 
 ![Demo 4: 一键定向安全清理](https://raw.githubusercontent.com/jimcary/Smart-Cache-Cleaner/main/assets/demo/demo4-cleaning.jpg)
