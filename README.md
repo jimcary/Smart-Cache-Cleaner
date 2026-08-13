@@ -10,12 +10,12 @@
 
 ## 🎨 插件图标 (Plugin Icon)
 
-扩展程序全局统一使用 `assets/icon.jpg` 作为标识图标：
+扩展程序全局统一使用 `assets/icons/icon128.png` / `assets/icon.png` 作为标识图标：
 
 ```text
    ┌──────────────────────────────────────────────┐
    │                                              │
-   │            [  assets/icon.jpg  ]             │
+   │         [ assets/icons/icon128.png ]         │
    │                                              │
    │      极简极速 · 智能缓存清理标识图标         │
    │                                              │
@@ -62,7 +62,7 @@
 
 | 组件 / 模块 | 文件路径 | 核心 API / 职责 |
 | :--- | :--- | :--- |
-| **Manifest V3 描述符** | `manifest.json` | 声明权限 `tabs`, `browsingData`, `storage`, `history` 与 `assets/icon.jpg` 图标 |
+| **Manifest V3 描述符** | `manifest.json` | 声明权限 `tabs`, `browsingData`, `storage`, `history` 与 `assets/icons/icon*.png` 图标 |
 | **Service Worker** | `background.js` | 监听 `chrome.tabs.onUpdated`、时间戳计算与 `chrome.browsingData.remove` 清理 |
 | **悬浮控制弹窗** | `popup.html` / `.js` | 当前页面域名识别、阈值滑块调整与快速清理 |
 | **明细管理控制台** | `options.html` / `.js` | 全维频次报表、分类检索过滤与白名单规则配置 |
@@ -145,13 +145,13 @@ npm run build:extension
 
 ```text
 smart-cache-cleaner/
-├── manifest.json              # Manifest V3 扩展配置文件 (图标指向 assets/icon.jpg)
+├── manifest.json              # Manifest V3 扩展配置文件 (图标指向 assets/icons/icon*.png)
 ├── background.js              # 后台 Service Worker (会话去重算法与缓存清理 API)
 ├── popup.html / popup.js      # 极简悬浮弹窗 UI 与阈值调控逻辑
 ├── options.html / options.js  # 完整频次面板与白名单管理配置
 ├── assets/
-│   ├── icon.jpg               # 插件全局主图标 (JPG 格式)
-│   ├── icons/                 # 各尺寸图标备份目录
+│   ├── icon.png               # 插件全局主图标 (PNG 格式)
+│   ├── icons/                 # 各尺寸标准 16/32/48/128 原生 PNG 图标
 │   └── demo/                  # SVG/PNG 交互示意图
 ├── scripts/
 │   └── build-extension.ts     # 物理编译输出脚本
