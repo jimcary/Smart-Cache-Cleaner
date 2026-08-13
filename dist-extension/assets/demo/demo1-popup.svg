@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" width="800" height="500">
+  <rect width="800" height="500" rx="12" fill="#0f172a" />
+  <rect x="2" y="2" width="796" height="38" rx="10" fill="#1e293b" />
+  <circle cx="20" cy="20" r="6" fill="#ef4444" />
+  <circle cx="38" cy="20" r="6" fill="#f59e0b" />
+  <circle cx="56" cy="20" r="6" fill="#10b981" />
+  <rect x="120" y="8" width="400" height="24" rx="6" fill="#334155" />
+  <text x="140" y="24" fill="#94a3b8" font-family="sans-serif" font-size="12">chrome-extension://smart-cache-cleaner/popup.html (演示一: 极简弹窗模式)</text>
+  <g transform="translate(220, 60)">
+    <rect width="360" height="410" rx="12" fill="#ffffff" stroke="#cbd5e1" stroke-width="2" />
+    <rect width="360" height="60" rx="12" fill="#2563eb" />
+    <text x="20" y="36" fill="#ffffff" font-family="sans-serif" font-weight="bold" font-size="16">🧹 智能缓存清理 (Smart Cleaner)</text>
+    <rect x="16" y="76" width="328" height="50" rx="8" fill="#f1f5f9" />
+    <text x="30" y="96" fill="#64748b" font-family="sans-serif" font-size="11">当前访问域名</text>
+    <text x="30" y="114" fill="#0f172a" font-family="sans-serif" font-weight="bold" font-size="14">github.com</text>
+    <rect x="240" y="90" width="90" height="24" rx="12" fill="#dcfce7" />
+    <text x="252" y="106" fill="#166534" font-family="sans-serif" font-weight="bold" font-size="11">🛡️ 白名单保护</text>
+    <rect x="16" y="184" width="100" height="54" rx="8" fill="#f8fafc" stroke="#e2e8f0" />
+    <text x="66" y="206" text-anchor="middle" fill="#0f172a" font-family="sans-serif" font-weight="bold" font-size="16">128</text>
+    <text x="66" y="224" text-anchor="middle" fill="#64748b" font-family="sans-serif" font-size="10">已监控域名</text>
+    <rect x="130" y="184" width="100" height="54" rx="8" fill="#fef2f2" stroke="#fecaca" />
+    <text x="180" y="206" text-anchor="middle" fill="#dc2626" font-family="sans-serif" font-weight="bold" font-size="16">14</text>
+    <text x="180" y="224" text-anchor="middle" fill="#991b1b" font-family="sans-serif" font-size="10">低频待清理</text>
+    <rect x="244" y="184" width="100" height="54" rx="8" fill="#f0fdf4" stroke="#bbf7d0" />
+    <text x="294" y="206" text-anchor="middle" fill="#16a34a" font-family="sans-serif" font-weight="bold" font-size="15">186.4 MB</text>
+    <text x="294" y="224" text-anchor="middle" fill="#166534" font-family="sans-serif" font-size="10">预期释放</text>
+    <rect x="16" y="352" width="328" height="42" rx="8" fill="#ef4444" />
+    <text x="180" y="378" text-anchor="middle" fill="#ffffff" font-family="sans-serif" font-weight="bold" font-size="14">🧹 一键清理 14 个低频域名数据</text>
+  </g>
+</svg>
