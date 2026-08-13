@@ -33,14 +33,27 @@ function buildExtension() {
     }
   });
 
-  // Copy icon.jpg to output directory
-  const rootIconPath = path.resolve(process.cwd(), 'assets/icon.jpg');
-  if (fs.existsSync(rootIconPath)) {
-    fs.copyFileSync(rootIconPath, path.join(outDir, 'assets/icon.jpg'));
-    fs.copyFileSync(rootIconPath, path.join(outDir, 'assets/icons/icon.jpg'));
-    fs.copyFileSync(rootIconPath, path.join(outDir, 'assets/icons/icon128.png'));
-    console.log('  ✓ 复制图标文件: assets/icon.jpg');
+  // Copy valid PNG and JPG icons to output directory
+  const rootIconJpg = path.resolve(process.cwd(), 'assets/icon.jpg');
+  if (fs.existsSync(rootIconJpg)) {
+    fs.copyFileSync(rootIconJpg, path.join(outDir, 'assets/icon.jpg'));
+    fs.copyFileSync(rootIconJpg, path.join(outDir, 'assets/icons/icon.jpg'));
   }
+
+  const sizes = [16, 32, 48, 128];
+  sizes.forEach((size) => {
+    const pngPath = path.resolve(process.cwd(), `assets/icons/icon${size}.png`);
+    if (fs.existsSync(pngPath)) {
+      fs.copyFileSync(pngPath, path.join(outDir, `assets/icons/icon${size}.png`));
+    }
+  });
+
+  const rootIconPng = path.resolve(process.cwd(), 'assets/icon.png');
+  if (fs.existsSync(rootIconPng)) {
+    fs.copyFileSync(rootIconPng, path.join(outDir, 'assets/icon.png'));
+  }
+
+  console.log('  ✓ 成功复制全尺寸 Chrome 原生 PNG 图标 (16/32/48/128)');
 
   console.log('\n✅ 编译成功！插件目录已生成在: ./dist-extension');
   console.log('💡 使用说明：');

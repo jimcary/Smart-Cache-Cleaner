@@ -1,6 +1,12 @@
 import JSZip from 'jszip';
 import { SessionConfig, CleanerSettings } from '../types/extension';
-import { ICON_JPG_BASE64 } from '../assets/iconBase64';
+import {
+  ICON_PNG_BASE64_16,
+  ICON_PNG_BASE64_32,
+  ICON_PNG_BASE64_48,
+  ICON_PNG_BASE64_128,
+  ICON_JPG_BASE64,
+} from '../assets/iconBase64';
 
 export interface ExtensionFiles {
   'manifest.json': string;
@@ -53,17 +59,17 @@ export function generateExtensionFiles(
         default_popup: 'popup.html',
         default_title: '智能缓存清理',
         default_icon: {
-          '16': 'assets/icon.jpg',
-          '32': 'assets/icon.jpg',
-          '48': 'assets/icon.jpg',
-          '128': 'assets/icon.jpg',
+          '16': 'assets/icons/icon16.png',
+          '32': 'assets/icons/icon32.png',
+          '48': 'assets/icons/icon48.png',
+          '128': 'assets/icons/icon128.png',
         },
       },
       icons: {
-        '16': 'assets/icon.jpg',
-        '32': 'assets/icon.jpg',
-        '48': 'assets/icon.jpg',
-        '128': 'assets/icon.jpg',
+        '16': 'assets/icons/icon16.png',
+        '32': 'assets/icons/icon32.png',
+        '48': 'assets/icons/icon48.png',
+        '128': 'assets/icons/icon128.png',
       },
       options_page: 'options.html',
     },
@@ -1905,16 +1911,29 @@ export async function downloadExtensionZip(
     zip.file(filename, content);
   });
 
-  // Convert ICON_JPG_BASE64 to binary byte array for ZIP
-  const binaryIconStr = atob(ICON_JPG_BASE64);
-  const iconJpgBytes = new Uint8Array(binaryIconStr.length);
-  for (let i = 0; i < binaryIconStr.length; i++) {
-    iconJpgBytes[i] = binaryIconStr.charCodeAt(i);
-  }
+  // Convert base64 icons to binary byte arrays for ZIP
+  const base64ToBytes = (base64Str: string): Uint8Array => {
+    const binaryStr = atob(base64Str);
+    const bytes = new Uint8Array(binaryStr.length);
+    for (let i = 0; i < binaryStr.length; i++) {
+      bytes[i] = binaryStr.charCodeAt(i);
+    }
+    return bytes;
+  };
 
-  // Add icon.jpg files to ZIP
+  const icon16Bytes = base64ToBytes(ICON_PNG_BASE64_16);
+  const icon32Bytes = base64ToBytes(ICON_PNG_BASE64_32);
+  const icon48Bytes = base64ToBytes(ICON_PNG_BASE64_48);
+  const icon128Bytes = base64ToBytes(ICON_PNG_BASE64_128);
+  const iconJpgBytes = base64ToBytes(ICON_JPG_BASE64);
+
+  // Add PNG & JPG icon files to ZIP
+  zip.file('assets/icons/icon16.png', icon16Bytes);
+  zip.file('assets/icons/icon32.png', icon32Bytes);
+  zip.file('assets/icons/icon48.png', icon48Bytes);
+  zip.file('assets/icons/icon128.png', icon128Bytes);
+  zip.file('assets/icon.png', icon128Bytes);
   zip.file('assets/icon.jpg', iconJpgBytes);
-  zip.file('assets/icons/icon.jpg', iconJpgBytes);
 
   // Helper to draw icon to canvas
   const createIconBuffer = (size: number): Uint8Array => {
