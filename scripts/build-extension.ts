@@ -52,7 +52,16 @@ function buildExtension() {
     fs.copyFileSync(rootIconPng, path.join(outDir, 'assets/icon.png'));
   }
 
-  console.log('  ✓ 成功复制全尺寸 Chrome 原生 PNG 图标 (16/32/48/128)');
+  // Copy demo images to output directory
+  const demoDir = path.resolve(process.cwd(), 'assets/demo');
+  if (fs.existsSync(demoDir)) {
+    const demoFiles = fs.readdirSync(demoDir);
+    demoFiles.forEach((file) => {
+      fs.copyFileSync(path.join(demoDir, file), path.join(outDir, 'assets/demo', file));
+    });
+  }
+
+  console.log('  ✓ 成功复制全尺寸 Chrome 原生 PNG 图标 (16/32/48/128) 与交互演示图');
 
   console.log('\n✅ 编译成功！插件目录已生成在: ./dist-extension');
   console.log('💡 使用说明：');
