@@ -78,28 +78,32 @@
 ### 1. 极简悬浮弹窗模式 (Popup Window)
 能够在任意网页上一键唤起悬浮小窗，直观查看当前记录域名数、待清理低频域名数以及可释放空间，并提供滑动阈值调节与一键定向清理。
 
-![Demo 1: 极简悬浮弹窗模式](assets/demo/demo1-popup.png)
+![Demo 1: 极简悬浮弹窗模式](https://github.com/user-attachments/assets/a0292027-5b18-403b-a755-2989c7c112ad)
+
 
 ---
 
 ### 2. 域名频次监控与分析控制台 (Analytics Dashboard)
 提供多维度筛选（按访问频次分类、保护白名单状态、域名检索等）与自定义排序功能，深度调阅网站历史访问与预估占用的存储空间。
 
-![Demo 2: 域名频次监控与分析控制台](assets/demo/demo2-dashboard.png)
+![Demo 2: 域名频次监控与分析控制台](https://github.com/user-attachments/assets/5e904581-a280-4aa4-98e8-c755426a2fd1)
+
 
 ---
 
 ### 3. 会话规则与受保护白名单配置 (Settings & Whitelist)
 灵活调整会话判定超时时间（默认 GA 算法建议 30 分钟），支持通过英文逗号、中文逗号、分号或换行**批量导入**受保护白名单域名，避免重要网站被意外误清理。
 
-![Demo 3: 会话规则与受保护白名单配置](assets/demo/demo3-settings.png)
+![Demo 3: 会话规则与受保护白名单配置](https://github.com/user-attachments/assets/a88716f1-6eeb-4039-a8e5-818a176ec02d)
+
 
 ---
 
 ### 4. 一键定向安全清理 (Targeted Data Cleanup)
 勾选目标域名或批量选择低频站点，安全清理页面 Cache、Cookies 凭证与 LocalStorage 本地存储，实时展示释放空间反馈与进度更新。
 
-![Demo 4: 一键定向安全清理](assets/demo/demo4-cleaning.png)
+![Demo 4: 一键定向安全清理](https://github.com/user-attachments/assets/0fd4ac0b-fcd6-4721-b9ec-2774ac64a75f)
+
 
 ---
 
